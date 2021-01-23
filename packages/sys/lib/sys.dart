@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 class Sys {
   static const MethodChannel _channel =
-      const MethodChannel('sys');
+      const MethodChannel('co.swipelab.ncx.sys');
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
