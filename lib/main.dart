@@ -3,9 +3,10 @@ import 'package:flutter/rendering.dart';
 import 'package:sys/sys.dart';
 
 void main() async {
-  final platformVersion = await Sys.platformVersion;
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(App(platformVersion: platformVersion));
+  final platformVersion = await Sys.platformVersion;
+  print(platformVersion);
+  runApp(App());
 }
 
 class File {
@@ -27,13 +28,9 @@ class Path {
 }
 
 class App extends StatelessWidget {
-  App({
-    this.platformVersion,
-  });
+  App();
 
-  final String platformVersion;
-
-  // This widget is the root of your application.
+// This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
