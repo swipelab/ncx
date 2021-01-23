@@ -1,0 +1,14 @@
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/CMakeFiles/install/strip.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/CMakeFiles/install/local.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/CMakeFiles/ncx.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/CMakeFiles/install.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/CMakeFiles/list_install_components.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/flutter/CMakeFiles/install/strip.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/flutter/CMakeFiles/install/local.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/flutter/CMakeFiles/install.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/flutter/CMakeFiles/list_install_components.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/flutter/CMakeFiles/flutter_assemble.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/flutter/CMakeFiles/edit_cache.dir
+/home/zen/git/swipelab/ncx/linux/cmake-build-debug/flutter/CMakeFiles/rebuild_cache.dir
