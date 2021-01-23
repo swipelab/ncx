@@ -30,7 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.0
 
   sys:
-    path: packages/sys
+    path: ./packages/sys
 
 
 dev_dependencies:

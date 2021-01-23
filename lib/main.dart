@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:sys/sys.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  final platformVersion = await Sys.platformVersion;
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(App(platformVersion: platformVersion));
 }
 
 class File {
@@ -23,12 +26,18 @@ class Path {
   final String name;
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
+  App({
+    this.platformVersion,
+  });
+
+  final String platformVersion;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ncx',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
