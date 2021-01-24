@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -12,9 +11,14 @@ class Sys {
     return version;
   }
 
-  static Future<List<String>> get directory async {
-    //TOOD:
-    await _channel.invokeMethod('directory');
-    return [];
+  static Future<Map<String, dynamic>> fsDirectory(String path) async {
+    final result = await _channel.invokeMapMethod<String, dynamic>(
+      'fs::directory',
+      <String, dynamic>{
+        "path": path,
+      },
+    );
+
+    return result;
   }
 }

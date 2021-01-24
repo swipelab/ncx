@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <chrono>
 
 #define SYS_PLUGIN(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj), sys_plugin_get_type(), \
@@ -17,6 +18,16 @@ struct _SysPlugin {
 };
 
 G_DEFINE_TYPE(SysPlugin, sys_plugin, g_object_get_type())
+
+static gint64 file_time_to_epoch(std::filesystem::file_time_type time) {
+    auto time_point = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+        time
+        - std::filesystem::file_time_type::clock::now()
+        + std::chrono::system_clock::now()
+    );
+
+    return time_point.time_since_epoch().count();
+}
 
 // Called when a method call is received from Flutter.
 static void sys_plugin_handle_method_call(
@@ -32,17 +43,20 @@ static void sys_plugin_handle_method_call(
     g_autofree gchar *version = g_strdup_printf("Linux %s", uname_data.version);
     g_autoptr(FlValue) result = fl_value_new_string(version);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
-  } else if (strcmp(method, "directory") == 0) {
+  } else if (strcmp(method, "fs::directory") == 0) {
 
-    std::vector<std::string> files;
-    for(const auto & file : std::filesystem::directory_iterator("/")) {
-      files.push_back(file.path());
+    const gchar* path = fl_value_get_string(fl_value_lookup(fl_method_call_get_args(method_call), fl_value_new_string("path")));
+
+    auto map = fl_value_new_map();
+    for(const auto & entry : std::filesystem::directory_iterator(path)) {
+      auto entryMap = fl_value_new_map();
+
+      fl_value_set(entryMap, fl_value_new_string("name"), fl_value_new_string(entry.path().filename().c_str()));
+      fl_value_set(entryMap, fl_value_new_string("lastModified"), fl_value_new_int( file_time_to_epoch(entry.last_write_time())) );
+
+      fl_value_set(map, fl_value_new_string(entry.path().c_str()), entryMap);
     }
-
-    //TODO: pass
-
-    g_autoptr(FlValue) result = fl_value_new_string("TODO");
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(map));
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }

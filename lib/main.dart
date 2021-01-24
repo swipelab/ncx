@@ -1,11 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sys/sys.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Sys.directory;
-  runApp(App());
+  FlutterError.onError = (FlutterErrorDetails details) {
+    //this line prints the default flutter gesture caught exception in console
+    //FlutterError.dumpErrorToConsole(details);
+    print("Error From INSIDE FRAME_WORK");
+    print("----------------------");
+    print("Error :  ${details.exception}");
+    print("StackTrace :  ${details.stack}");
+  };
+  runZoned<Future<void>>(
+    () async {
+      runApp(Main());
+    },
+    onError: (dynamic error, StackTrace stackTrace) {
+      print(error);
+    },
+  );
 }
 
 class File {
@@ -26,8 +42,8 @@ class Path {
   final String name;
 }
 
-class App extends StatelessWidget {
-  App();
+class Main extends StatelessWidget {
+  Main();
 
 // This widget is the root of your application.
   @override
@@ -38,17 +54,17 @@ class App extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Main(),
+      home: MainScreen(),
     );
   }
 }
 
-class Main extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   @override
-  _MainState createState() => _MainState();
+  _MainScreen createState() => _MainScreen();
 }
 
-class _MainState extends State<Main> {
+class _MainScreen extends State<MainScreen> {
   final List<Action> actions = [
     Action(name: 'Info'),
     Action(name: 'View'),
@@ -67,9 +83,9 @@ class _MainState extends State<Main> {
             Expanded(
               child: Row(
                 children: [
-                  Expanded(child: Pane(path: Path(name: '/home/zen/'))),
+                  Expanded(child: Pane(path: Path(name: '/'))),
                   Container(color: Colors.purple.shade100, width: 8),
-                  Expanded(child: Pane(path: Path(name: '/home/zen/'))),
+                  Expanded(child: Pane(path: Path(name: '/home/zen'))),
                 ],
               ),
             ),
@@ -121,36 +137,58 @@ class Pane extends StatefulWidget {
 }
 
 class _PaneState extends State<Pane> {
-  List<File> files = [
-    File(name: '..'),
-    File(name: 'git'),
-    File(name: 'photos'),
-    File(name: 'movies'),
-    File(name: 'music'),
-  ];
+  List<File> _files = [];
+
+  Future<void> refresh() async {
+    final directory = await Sys.fsDirectory(widget.path.name);
+
+    setState(() {
+      _files = directory.entries
+          .map((entry) => File(
+                name: entry.key,
+              ))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Stack(
       children: [
-        Material(
-          elevation: 1,
-          child: Container(
-            padding: EdgeInsets.all(12),
-            child: Text(
-              widget.path.name,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+        Positioned.fill(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Material(
+                elevation: 1,
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  child: Text(
+                    widget.path.name,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) =>
+                      FileTile(file: _files[index]),
+                  itemCount: _files.length,
+                ),
+              )
+            ],
           ),
         ),
-        Expanded(
-            child: ListView.builder(
-                itemBuilder: (context, index) => FileTile(file: files[index]),
-                itemCount: files.length))
+        Align(
+          alignment: Alignment.bottomRight,
+          child: IconButton(
+            onPressed: refresh,
+            icon: Icon(Icons.refresh),
+          ),
+        )
       ],
     );
   }
