@@ -41,7 +41,8 @@ static void sys_plugin_handle_method_call(
 
     //TODO: pass
 
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(""));
+    g_autoptr(FlValue) result = fl_value_new_string("TODO");
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }
