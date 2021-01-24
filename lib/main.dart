@@ -139,15 +139,24 @@ class Pane extends StatefulWidget {
 class _PaneState extends State<Pane> {
   List<File> _files = [];
 
+  initState() {
+    super.initState();
+    refresh();
+  }
+
   Future<void> refresh() async {
     final directory = await Sys.fsDirectory(widget.path.name);
 
     setState(() {
-      _files = directory.entries
-          .map((entry) => File(
-                name: entry.key,
-              ))
-          .toList();
+      _files = [
+        File(name: '..'),
+        ...directory.entries
+            .map((entry) => File(
+                  name: entry.value["name"],
+                ))
+            .toList()
+              ..sort((a, b) => a.name.compareTo(b.name))
+      ];
     });
   }
 
@@ -159,26 +168,8 @@ class _PaneState extends State<Pane> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Material(
-                elevation: 1,
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  child: Text(
-                    widget.path.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) =>
-                      FileTile(file: _files[index]),
-                  itemCount: _files.length,
-                ),
-              )
+              PaneHeader(path: widget.path),
+              Expanded(child: PaneEntries(items: _files)),
             ],
           ),
         ),
@@ -190,6 +181,61 @@ class _PaneState extends State<Pane> {
           ),
         )
       ],
+    );
+  }
+}
+
+class PaneEntries extends StatelessWidget {
+  PaneEntries({this.items}) : assert(items != null);
+
+  final List<File> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: DataTable(
+        headingRowHeight: 0,
+        dataRowHeight: 32,
+        dataTextStyle: TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+        ),
+        columns: [
+          DataColumn(label: Text('Name')),
+        ],
+        rows: items
+            .map(
+              (e) => DataRow(
+                cells: [
+                  DataCell(Text(e.name)),
+                ],
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class PaneHeader extends StatelessWidget {
+  PaneHeader({this.path});
+
+  final Path path;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 1,
+      child: Container(
+        padding: EdgeInsets.all(12),
+        child: Text(
+          path.name,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
     );
   }
 }
