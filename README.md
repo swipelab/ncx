@@ -3,6 +3,10 @@
 A cute NC emulation with Flutter
 
 Road map
+- [x] Linux
+- [ ] MacOS
+- [ ] Windows
+
 - [x] directory
 - [x] dual pane
 - [ ] pane resize
