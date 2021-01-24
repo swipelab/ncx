@@ -24,4 +24,4 @@ Road map
 *** Drop a message for a feature you think should make it in ***
 
 
-![ncx 2021-01-24](https://github.com/swipelab/ncx/tree/master/docs/screenshot-2021-01-24.png "ncx 2021-01-24")
+![ncx 2021-01-24](/docs/screenshot-2021-01-24.png?raw=true "ncx 2021-01-24")
