@@ -4,8 +4,7 @@ import 'package:sys/sys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final platformVersion = await Sys.platformVersion;
-  print(platformVersion);
+  await Sys.directory;
   runApp(App());
 }
 

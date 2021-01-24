@@ -11,4 +11,10 @@ class Sys {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
+
+  static Future<List<String>> get directory async {
+    //TOOD:
+    await _channel.invokeMethod('directory');
+    return [];
+  }
 }

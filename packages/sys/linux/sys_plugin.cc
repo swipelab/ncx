@@ -3,6 +3,10 @@
 #include <flutter_linux/flutter_linux.h>
 #include <gtk/gtk.h>
 #include <sys/utsname.h>
+#include <filesystem>
+#include <vector>
+#include <string>
+#include <iostream>
 
 #define SYS_PLUGIN(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj), sys_plugin_get_type(), \
@@ -28,6 +32,16 @@ static void sys_plugin_handle_method_call(
     g_autofree gchar *version = g_strdup_printf("Linux %s", uname_data.version);
     g_autoptr(FlValue) result = fl_value_new_string(version);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
+  } else if (strcmp(method, "directory") == 0) {
+
+    std::vector<std::string> files;
+    for(const auto & file : std::filesystem::directory_iterator("/")) {
+      files.push_back(file.path());
+    }
+
+    //TODO: pass
+
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(""));
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }
